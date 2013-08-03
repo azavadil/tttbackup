@@ -89,6 +89,8 @@ function Board(){
 		
 	this._board = new Array(); 
 	
+	this.size = 9; 
+	
 	for (var i = 0; i < 9; i++){ 
 		this._board.push(this.NONE); 
 	}
@@ -201,8 +203,89 @@ function Board(){
 	}
 }
 
+function reportID(){
+	console.log(this.id); 
+};
+
+function nextPlayer(playerID){
+	if(playerID == 1) return 2; 
+	else return 1; 
+}
+
+
+function cellID2index(cellID){ 
+	console.log("cellID2index called with " + cellID); 
+	var id2index = {"00":0,"01":1,"02":2,"10":3,"11":4,"12":5,"20":6,"21":7,"22":8}; 
+	return id2index[cellID]; 
+}
+
+function index2CellID(index){ 
+	var index2id = {0:"00",1:"01",2:"02",3:"10",4:"11",5:"12",6:"20",7:"21",8:"22"}; 
+	return index2id[index]; 
+}
+
+function playerIcon(numberID){ 
+	var playerIcon = {1:"X", 2:"O"}; 
+	return playerIcon[numberID]; 
+}
+
+function playTurn(){ 
+		
+	if(activePlayer == null){ 
+		activePlayer = 1; 
+	}
+	var selectedCell;
+	if(activePlayer == 1){ 
+		
+		//human goes first
+		selectedCell = this.id;
+		var res = cellID2index(selectedCell); 
+		board.move(activePlayer, cellID2index(selectedCell)); 
+		this.firstChild.nodeValue = playerIcon(activePlayer); 
+	
+		//computer goes
+		activePlayer = nextPlayer(activePlayer); 
+		move = mm.buildtree(board, activePlayer);
+	
+		board.move(activePlayer,move);
+		var secondSelectedCell = document.getElementById(index2CellID(move)); 
+		secondSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
+		
+		//set back to the human 
+		activePlayer = nextPlayer(activePlayer); 
+	}
+}
+
+/**
+ * Note: 
+ * -----
+ * we'll have to get the board type as the first action and then build out the board
+ * we'll also have to modify the board to be a tic tac toe board or a connect4 board
+ */ 
+
+activePlayer = null; 
 board = new Board(); 
 mm = new MinMax(6, board); 
+
+
+
+var sideLen = Math.sqrt(board.size); 
+
+var cells = new Array(); 
+var id; 
+
+for (var i = 0; i < sideLen; i++){ 
+	for(var j = 0; j< sideLen; j++) {
+		id = String(i) + String(j);
+		cells.push(document.getElementById(id)); 
+	}
+}
+
+//add event listeners
+cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
+cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
+cells.map(function(item,index,array){item.firstChild.nodeValue = " ";}); 
+
 
 
 var playing = true; 
@@ -211,6 +294,11 @@ var currentPlayer = 1;
 
 var count = 0; 
 
+var test = "11"; 
+
+console.log(cellID2index(test)); 
+
+/*
 while(playing){ 
 
 	
@@ -251,6 +339,6 @@ while(playing){
 	console.log(board.toStr()); 
 	
 }
-	
+*/
 		
 		

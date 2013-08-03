@@ -1,0 +1,35 @@
+
+
+Concept inventory
+
+high: 					play tic-tac-toe: 		fn(p1, p2): return winner
+						strategy				fn(state): return action			
+
+
+mid: 					current state of the game (board, player) 
+						actions we can take: strings ('00','01' .. '22')
+
+
+
+low level: 				board 					list of list
+						players					by their strategy fn
+						
+						
+						
+def makeMove(state, move): 
+	"""
+		makeMove takes a state consisting of a board and a move and
+		returns the updated state. 
+		
+		@param1: 	state is a tuple consisting of the board and 
+					the player who's turn it is to move 
+		@param2: 	the board position the player is making
+					
+	playerID = {0:"X",1:"0"}
+	other = {1:0,0:1}
+	board, player = state
+	row, col = move
+	board[row][col] = playerID[player]
+	
+	return (board, other[player]) 
+	
