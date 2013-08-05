@@ -4,8 +4,7 @@
  * creates the board for a tic tac toe game
  */ 
 
-function createTTTBoard(
-
+function createTTTBoard(){
 
 	var res = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td>			<td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
 	
@@ -273,18 +272,6 @@ function playTurn(){
 	
 }
 
-
-/**
- * Note: 
- * -----
- * we'll have to get the board type as the first action and then build out the board
- * we'll also have to modify the board to be a tic tac toe board or a connect4 board
- */ 
-
-activePlayer = null; 
-board = new Board(); 
-mm = new MinMax(6, board); 
-
 function computerOpens(){
 	activePlayer = 2;
 	var mainTitle = document.getElementById("mainTitle"); 
@@ -297,6 +284,29 @@ function computerOpens(){
 	computerSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
 	activePlayer = nextPlayer(activePlayer); 	
 }
+
+
+/**
+ * Note: 
+ * -----
+ * we'll have to get the board type as the first action and then build out the board
+ * we'll also have to modify the board to be a tic tac toe board or a connect4 board
+ */ 
+
+ /** 
+  * Main routine starts here
+  * ------------------------
+  * 
+  */ 
+  
+var boardContainer = document.getElementById("boardContainer"); 
+boardContainer.innerHTML = createTTTBoard(); 
+
+  
+activePlayer = null; 
+board = new Board(); 
+mm = new MinMax(6, board); 
+
 
 
 var sideLen = Math.sqrt(board.size); 
@@ -320,13 +330,5 @@ mainTitle.addEventListener("click",computerOpens, false);
 
 
 
-var playing = true; 
 
-var currentPlayer = 1; 
-
-var count = 0; 
-
-var test = "11"; 
-
-console.log(cellID2index(test)); 
 
