@@ -6,11 +6,27 @@
 
 function createTTTBoard(){
 
-	var res = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td>			<td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
+	var board = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td>			<td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
 	
-	return res; 
+	return board; 
 }
-		
+
+
+
+/**
+ * Function: createC4Board
+ * -----------------------
+ * createC4Board creates the board for a game of connect four. 
+ */ 
+
+
+function createC4Board(){ 
+
+
+	var board = '<table class="tttBoard" id="tictactoe"><tr class="topRow"><td id="00">&nbsp</td><td id="01">&nbsp</td><td id="02">&nbsp</td><td id="03">&nbsp</td></tr><tr class="bottomRow"><td id="10">&nbsp</td><td id="11">&nbsp</td><td id="12">&nbsp</td><td id="13">&nbsp</td></tr><tr class="bottomRow"><td id="20">&nbsp</td><td id="21">&nbsp</td><td id="22">&nbsp</td><td id="23">&nbsp</td></tr><tr class="bottomRow"><td id="30">&nbsp</td><td id="31">&nbsp</td><td id="32">&nbsp</td><td id="33">&nbsp</td></tr></table>'
+	
+	return board; 
+}
 
 function selectFrom(lowerValue, upperValue) {
 	var choices = upperValue - lowerValue + 1;
@@ -299,9 +315,19 @@ function computerOpens(){
   * 
   */ 
   
-var boardContainer = document.getElementById("boardContainer"); 
-boardContainer.innerHTML = createTTTBoard(); 
+if(false){
+	var boardContainer = document.getElementById("boardContainer"); 
+	boardContainer.innerHTML = createTTTBoard(); 
+}
 
+var gameSelected = "C4"; 
+
+if(gameSelected == "C4"){ 
+	var cssLink = document.getElementById("cssLink"); 
+	cssLink.href = "F:/Tictactoe/mainC4.css"; 
+	var boardContainer = document.getElementById("boardContainer"); 
+	boardContainer.innerHTML = createC4Board();
+}
   
 activePlayer = null; 
 board = new Board(); 
