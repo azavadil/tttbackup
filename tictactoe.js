@@ -94,114 +94,115 @@ function Board(){
 	for (var i = 0; i < 9; i++){ 
 		this._board.push(this.NONE); 
 	}
-	
-	this.copy = function(){
-		var clone = new Board();  
-		clone._board = this._board.concat(); 
-		return clone; 
-	}; 
-			
-	this.move = function(playerID, pos){ 
-		this._board[pos] = playerID; 
-	}; 
-	
-	this.successors = function(){
-		
-		var successorLst = new Array(); 
-		for (var i = 0; i < 9; i++) {
-			if (this._board[i] == this.NONE) { 
-				successorLst.push(i); 
-			}
-		}
-		return successorLst; 
-	};
-	
-	this.full = function() { 
-		for (var i =0; i < 9; i++){ 
-			if (this._board[i] == this.NONE){
-				return false; 
-			}
-		}
-		return true; 
-	};
-
-	this._check = function(a,b,c){
-		if(this._board[a] == this._board[b] && 
-		   this._board[a] == this._board[c] && 
-		   this._board[a] != this.NONE) { 
-		   
-		   return this._board[a]; 
-		}
-		return this.NONE; 
-	};
-	
-	this.getWinner = function(){
-		var winner = this._check(0,1,2); 
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(3,4,5);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(6,7,8);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(0,3,6); 
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(1,4,7);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(2,5,8);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(0,4,8);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		winner = this._check(2,4,6);
-		if (winner != this.NONE) {
-			return winner; 
-		}
-		return this.NONE; 
-	}
-	
-	this.isEmpty = function(){ 
-		for (var i = 0; i < this._board.length; i++){
-			if (this._board[i] != this.NONE) { 
-				return false; 
-			}
-		} 
-		return true; 
-	}
-	
-	this.isCenterOnly = function(){
-		var center; 
-		for (var i = 0; i < this._board.length; i++) {
-			if(this._board[i] != this.NONE && i != 4){ 
-				center = false; 
-			}
-		}
-		return center != this.NONE; 
-	}
-	
-	
-	this.toStr = function(){
-		var str = ""
-		for (var i = 0; i < 9; i++){ 
-			str += this._board[i]; 
-			if(i==2 || i == 5){
-				str += "\n"; 
-			}
-		} 
-		return str; 
-	}
 }
+
+Board.prototype.copy = function(){
+	var clone = new Board();  
+	clone._board = this._board.concat(); 
+	return clone; 
+}; 
+			
+Board.prototype.move = function(playerID, pos){ 
+	this._board[pos] = playerID; 
+}; 
+	
+Board.prototype.successors = function(){
+		
+	var successorLst = new Array(); 
+	for (var i = 0; i < 9; i++) {
+		if (this._board[i] == this.NONE) { 
+			successorLst.push(i); 
+		}
+	}
+	return successorLst; 
+};
+	
+Board.prototype.full = function() { 
+	for (var i =0; i < 9; i++){ 
+		if (this._board[i] == this.NONE){
+			return false; 
+		}
+	}
+	return true; 
+};
+
+Board.prototype._check = function(a,b,c){
+	if(this._board[a] == this._board[b] && 
+	   this._board[a] == this._board[c] && 
+	   this._board[a] != this.NONE) { 
+	   
+	   return this._board[a]; 
+	}
+	return this.NONE; 
+};
+	
+Board.prototype.getWinner = function(){
+	var winner = this._check(0,1,2); 
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(3,4,5);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(6,7,8);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(0,3,6); 
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(1,4,7);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(2,5,8);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(0,4,8);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	winner = this._check(2,4,6);
+	if (winner != this.NONE) {
+		return winner; 
+	}
+	return this.NONE; 
+}
+	
+Board.prototype.isEmpty = function(){ 
+	for (var i = 0; i < this._board.length; i++){
+		if (this._board[i] != this.NONE) { 
+			return false; 
+		}
+	} 
+	return true; 
+}
+	
+Board.prototype.isCenterOnly = function(){
+	var center; 
+	for (var i = 0; i < this._board.length; i++) {
+		if(this._board[i] != this.NONE && i != 4){ 
+			center = false; 
+		}
+	}
+	return center != this.NONE; 
+}
+	
+	
+Board.prototype.toStr = function(){
+	var str = ""
+	for (var i = 0; i < 9; i++){ 
+		str += this._board[i]; 
+		if(i==2 || i == 5){
+			str += "\n"; 
+		}
+	} 
+	return str; 
+}
+
 
 function reportID(){
 	console.log(this.id); 
@@ -237,7 +238,7 @@ function playTurn(){
 	var selectedCell;
 	if(activePlayer == 1){ 
 		
-		//human goes first
+		//human turn
 		selectedCell = this.id;
 		var res = cellID2index(selectedCell); 
 		board.move(activePlayer, cellID2index(selectedCell)); 
@@ -254,7 +255,9 @@ function playTurn(){
 		//set back to the human 
 		activePlayer = nextPlayer(activePlayer); 
 	}
+	
 }
+
 
 /**
  * Note: 
@@ -267,6 +270,18 @@ activePlayer = null;
 board = new Board(); 
 mm = new MinMax(6, board); 
 
+function computerOpens(){
+	activePlayer = 2;
+	var mainTitle = document.getElementById("mainTitle"); 
+	mainTitle.removeEventListener("click", computerOpens, false); 
+	
+	//computer goes first
+	move = mm.buildtree(board, activePlayer);
+	board.move(activePlayer,move);
+	var computerSelectedCell = document.getElementById(index2CellID(move)); 
+	computerSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
+	activePlayer = nextPlayer(activePlayer); 	
+}
 
 
 var sideLen = Math.sqrt(board.size); 
@@ -284,7 +299,9 @@ for (var i = 0; i < sideLen; i++){
 //add event listeners
 cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
 cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
-cells.map(function(item,index,array){item.firstChild.nodeValue = " ";}); 
+cells.map(function(item,index,array){item.firstChild.nodeValue = '\u00A0\u00A0';}); 
+var mainTitle = document.getElementById("mainTitle"); 
+mainTitle.addEventListener("click",computerOpens, false); 
 
 
 
@@ -298,47 +315,3 @@ var test = "11";
 
 console.log(cellID2index(test)); 
 
-/*
-while(playing){ 
-
-	
-	if(board.full()){
-		console.log("Tie game"); 
-		break;
-	}
-	
-	if(currentPlayer == 1){
-		move = mm.buildtree(board, currentPlayer);
-		console.log("current player = " + currentPlayer + ", move =" + move); 
-	}
-	
-	if(currentPlayer == 2){
-		move = mm.buildtree(board,currentPlayer); 
-		console.log("current player = " + currentPlayer + ", move =" + move); 
-	}
-	
-	if (move >= 0){
-		board.move(currentPlayer, move); 
-	
-		winner = board.getWinner(); 
-		
-		if(winner == board.X){
-			console.log("X wins"); 
-			playing = false; 
-		}
-		else if(winner == board.O) { 
-			console.log("Y wins");
-			playing = false;
-		}
-	}
-	if(currentPlayer == board.X){
-		currentPlayer = board.O; 
-	} else { 
-		currentPlayer = board.X;
-	}
-	console.log(board.toStr()); 
-	
-}
-*/
-		
-		
