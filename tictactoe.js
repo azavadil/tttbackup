@@ -1,3 +1,18 @@
+/**
+ * Implementation note
+ * -------------------
+ * creates the board for a tic tac toe game
+ */ 
+
+function createTTTBoard(
+
+
+	var res = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td>			<td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
+	
+	return res; 
+}
+		
+
 function selectFrom(lowerValue, upperValue) {
 	var choices = upperValue - lowerValue + 1;
 	return Math.floor(Math.random() * choices + lowerValue);
