@@ -53,7 +53,7 @@ function createTTTBoard(){
  */ 
  
 function mkcols(board){ 
-	assert(isSquare(board.length), "Board was not a perfect square"); 
+	assert(isSquare(board.length), "mkcols: Board was not a perfect square"); 
 	var sideLen = Math.sqrt(board.length); 
 	
 	var i;
@@ -77,7 +77,7 @@ function mkcols(board){
  */ 
  
  function mkrows(board){ 
-	assert(isSquare(board.length), "Board was not a perfect square"); 
+	assert(isSquare(board.length), "mkrows: Board was not a perfect square"); 
 	var sideLen = Math.sqrt(board.length);
 	
 	var i;
@@ -100,7 +100,7 @@ function mkcols(board){
  */
  
  function mkdiags(board){ 
-	assert(isSquare(board.length), "Board was not a perfect square"); 
+	assert(isSquare(board.length), "mkdiags: Board was not a perfect square"); 
 	var sideLen = Math.sqrt(board.length);
 	
 	var i;
@@ -266,51 +266,40 @@ Board.prototype.full = function() {
 	return true; 
 };
 
-Board.prototype._check = function(a,b,c){
-	if(this._board[a] == this._board[b] && 
-	   this._board[a] == this._board[c] && 
-	   this._board[a] != this.NONE) { 
-	   
-	   return this._board[a]; 
+
+/**
+ * Member function: _check
+ * -----------------------
+ * [[1,1,2],[1,2,0],[1,1,0]]  
+ */ 
+
+Board.prototype._check = function(arr){
+	var res = this.NONE; 
+	var i; 
+	for(i = 0; i < arr.length; i++){ 
+		var first = arr[i][0]
+		if( arr[i].every(function(item,index,array){ return item == first;}) ){ 
+			res = first; 
+			if(res != this.NONE){ break;}
+		}
 	}
-	return this.NONE; 
+	return res;
 };
+
 	
 Board.prototype.getWinner = function(){
-	var winner = this._check(0,1,2); 
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(3,4,5);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(6,7,8);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(0,3,6); 
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(1,4,7);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(2,5,8);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(0,4,8);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(2,4,6);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	return this.NONE; 
-}
+	var rows = mkrows(this._board); 
+	var cols = mkcols(this._board); 
+	var diags = mkdiags(this._board); 
+	
+	var result = this.NONE; 
+	
+	result = this._check(rows); 
+	if (!result) {result = this._check(cols)}; 
+	if (!result) {result = this._check(diags)}; 
+	
+	return result; 
+};
 	
 Board.prototype.isEmpty = function(){ 
 	for (var i = 0; i < this._board.length; i++){
@@ -363,7 +352,7 @@ function BoardC4(){
 }
 
 BoardC4.prototype.copy = function(){
-	var clone = new Board();  
+	var clone = new BoardC4();  
 	clone._board = this._board.concat(); 
 	return clone; 
 }; 
@@ -396,63 +385,32 @@ BoardC4.prototype.full = function() {
 	return true; 
 };
 
-BoardC4.prototype._check = function(a,b,c,d){
-	if(this._board[a] == this._board[b] && 
-	   this._board[a] == this._board[c] && 
-	   this._board[a] == this._board[d] && 
-	   this._board[a] != this.NONE) { 
-		return this._board[a]; 
+BoardC4.prototype._check = function(arr){
+	var res = this.NONE; 
+	var i; 
+	for(i = 0; i < arr.length; i++){ 
+		var first = arr[i][0]
+		if( arr[i].every(function(item,index,array){ return item == first;}) ){ 
+			res = first; 
+			if(res != this.NONE){ break;}
+		}
 	}
-	return this.NONE; 
+	return res;
 };
 	
 BoardC4.prototype.getWinner = function(){
-	var winner = this._check(0,1,2,3); 
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(4,5,6,7);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(8,9,10,11);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(12,13,14,15); 
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(0,4,8,12);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(1,5,9,13);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(2,6,10,14);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(3,7,11,15);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(3,7,11,15);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(0,5,10,15);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	winner = this._check(3,6,9,12);
-	if (winner != this.NONE) {
-		return winner; 
-	}
-	return this.NONE; 
-}
+	var rows = mkrows(this._board); 
+	var cols = mkcols(this._board); 
+	var diags = mkdiags(this._board); 
+	
+	var result = this.NONE; 
+	
+	result = this._check(rows); 
+	if (!result) {result = this._check(cols)}; 
+	if (!result) {result = this._check(diags)}; 
+	
+	return result; 
+};
 		
 	
 BoardC4.prototype.toStr = function(){
@@ -525,15 +483,11 @@ function playTurn(){
 		selectedCell = this.id;
 		var res = cellID2index(selectedCell); 
 		board.move(activePlayer, cellID2index(selectedCell)); 
-		console.log("board to computer \n" + board.toStr());
 		this.firstChild.nodeValue = playerIcon(activePlayer); 
 	
 		//computer turn, switch players
 		activePlayer = nextPlayer(activePlayer); 
-		console.log("active player (should be computer) = ", activePlayer); 
-		console.log("board to computer \n" + board.toStr());
 		move = mm.buildtree(board, activePlayer);	
-		console.log("computer move: " + move); 
 		board.move(activePlayer,move);
 		console.log(board.toStr()); 
 		
@@ -582,15 +536,13 @@ function computerOpens(){
   * 
   */ 
   
-var testing = true; 
 
-if(testing){
-	gameSelected = "connectFour"; 
-}
- 
+
+gameSelected = "connectFour";
+
   
 
-if(!testing && gameSelected == "ticTacToe"){
+if(gameSelected == "ticTacToe"){
 	var cssLink = document.getElementById("cssLink"); 
 	cssLink.href = "F:/Tictactoe/mainttt.css"; 
 	var boardContainer = document.getElementById("boardContainer"); 
@@ -600,7 +552,7 @@ if(!testing && gameSelected == "ticTacToe"){
 }
 
 
-if(!testing && gameSelected == "connectFour"){ 
+if(gameSelected == "connectFour"){ 
 	var cssLink = document.getElementById("cssLink"); 
 	cssLink.href = "F:/Tictactoe/mainC4.css"; 
 	var boardContainer = document.getElementById("boardContainer"); 
@@ -610,16 +562,12 @@ if(!testing && gameSelected == "connectFour"){
   
 activePlayer = null; 
 
-if(testing){ 
-	board = new BoardC4(); 
-}
 
 mm = new MinMax(6, board); 
 
 
 
 var sideLen = Math.sqrt(board.size); 
-
 var cells = new Array(); 
 var id; 
 
@@ -631,54 +579,15 @@ for (var i = 0; i < sideLen; i++){
 }
 
 //add event listeners
-if(!testing){ 
-	cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
-	cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
-	cells.map(function(item,index,array){item.firstChild.nodeValue = '\u00A0\u00A0';}); 
-	var mainTitle = document.getElementById("mainTitle"); 
-	mainTitle.addEventListener("click",computerOpens, false); 
+if(true){
+cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
+cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
+cells.map(function(item,index,array){item.firstChild.nodeValue = '\u00A0\u00A0';}); 
+var mainTitle = document.getElementById("mainTitle"); 
+mainTitle.addEventListener("click",computerOpens, false); 
+
 }
 
 
-
-var playing = true; 
-activePlayer = 1; 
-
-var move; 
-var winner; 
-while(testing && playing && false){ 
-	
-	console.log("initial board = \n" + board.toStr()); 
-	move = mm.buildtree(board, activePlayer);
-	if(move == -1){ 
-		break;
-	}
-	console.log("move = " + move); 
-	board.move(activePlayer, move); 
-	winner = board.getWinner(); 
-	if(winner != 0){ 
-		console.log("winner = " + winner);
-		playing = false; 
-		break; 
-	}
-	
-	activePlayer = nextPlayer(activePlayer); 
-	
-}
-	
-console.log(board.toStr()); 
-
-board.move(1,13); 
-board.move(1,9);
-board.move(1,5); 
-board.move(2,14); 
-board.move(2,10); 
-board.move(2,6);
-
-console.log("winner  = " + board.getWinner());  
-console.log(board.toStr()); 
-var testMove = mm.buildtree(board,2); 
-console.log(board.successors()); 
-console.log("testmove = " + testMove);  
 	
 	
