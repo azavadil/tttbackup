@@ -12,6 +12,11 @@ function assert(condition, message) {
 }
 
 
+
+
+
+
+
 /**
  * Function: isSquare
  * ------------------
@@ -26,21 +31,6 @@ function isSquare(integer){
 }
 
 
-/**
- * Implementation note
- * -------------------
- * creates the board for a tic tac toe game
- */ 
-
-function createTTTBoard(){
-
-	var board = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td>			<td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
-	
-	return board; 
-}
-
-
-
 /** 
  * Function: mkcols
  * ---------------_
@@ -52,14 +42,14 @@ function createTTTBoard(){
  * return value:	an array of arrays representing the columns
  */ 
  
-function mkcols(board){ 
-	assert(isSquare(board.length), "mkcols: Board was not a perfect square"); 
-	var sideLen = Math.sqrt(board.length); 
+function mkcols(checkBoard){ 
+	assert(isSquare(checkBoard.length), "mkcols: Board was not a perfect square"); 
+	var sideLen = Math.sqrt(checkBoard.length); 
 	
 	var i;
 	var cols = new Array(); 
 	for(i = 0; i < sideLen; i++){
-		var col = board.filter(function(item,index,array){ return i == index%sideLen; }); 
+		var col = checkBoard.filter(function(item,index,array){ return i == index%sideLen; }); 
 		cols.push(col); 
 	}
 	return cols
@@ -76,14 +66,14 @@ function mkcols(board){
  * return value: 	an array of arrays representing the rows
  */ 
  
- function mkrows(board){ 
-	assert(isSquare(board.length), "mkrows: Board was not a perfect square"); 
-	var sideLen = Math.sqrt(board.length);
+ function mkrows(checkBoard){ 
+	assert(isSquare(checkBoard.length), "mkrows: Board was not a perfect square"); 
+	var sideLen = Math.sqrt(checkBoard.length);
 	
 	var i;
 	var rows = new Array(); 
 	for(i = 0; i < sideLen; i++){
-		var row = board.slice(i*sideLen, i*sideLen+sideLen); 
+		var row = checkBoard.slice(i*sideLen, i*sideLen+sideLen); 
 		rows.push(row); 
 	}
 	return rows; 
@@ -99,17 +89,17 @@ function mkcols(board){
  * return value: 	an array of arrays representing the diagonals
  */
  
- function mkdiags(board){ 
-	assert(isSquare(board.length), "mkdiags: Board was not a perfect square"); 
-	var sideLen = Math.sqrt(board.length);
+ function mkdiags(checkBoard){ 
+	assert(isSquare(checkBoard.length), "mkdiags: Board was not a perfect square"); 
+	var sideLen = Math.sqrt(checkBoard.length);
 	
 	var i;
 	var diags = new Array(); 
 	var diag1 = new Array(); 
 	var diag2 = new Array(); 
 	for(i = 0; i < sideLen; i++){
-		diag1.push(board[i*sideLen + i]); 
-		diag2.push(board[(i+1)*sideLen - 1 - i]); 
+		diag1.push(checkBoard[i*sideLen + i]); 
+		diag2.push(checkBoard[(i+1)*sideLen - 1 - i]); 
 		
 	}
 	diags.push(diag1,diag2); 
@@ -118,20 +108,7 @@ function mkcols(board){
 
  
 
-/**
- * Function: createC4Board
- * -----------------------
- * createC4Board creates the board for a game of connect four. 
- */ 
 
-
-function createC4Board(){ 
-
-
-	var board = '<table class="tttBoard" id="tictactoe"><tr class="topRow"><td id="00">&nbsp</td><td id="01">&nbsp</td><td id="02">&nbsp</td><td id="03">&nbsp</td></tr><tr class="bottomRow"><td id="10">&nbsp</td><td id="11">&nbsp</td><td id="12">&nbsp</td><td id="13">&nbsp</td></tr><tr class="bottomRow"><td id="20">&nbsp</td><td id="21">&nbsp</td><td id="22">&nbsp</td><td id="23">&nbsp</td></tr><tr class="bottomRow"><td id="30">&nbsp</td><td id="31">&nbsp</td><td id="32">&nbsp</td><td id="33">&nbsp</td></tr></table>'
-	
-	return board; 
-}
 
 function selectFrom(lowerValue, upperValue) {
 	var choices = upperValue - lowerValue + 1;
@@ -167,13 +144,13 @@ function MinMax(maxdepth, initBoard){
 			return 0; 
 		}
 		
-		
-		if(gameSelected == "ticTacToe" && board.isEmpty()) { 
+		//script specific moves for tic tac toe
+		if(playboard.size == 9 && board.isEmpty()) { 
 			this._bestmove = 4; 
 			return; 
 		}
 		
-		if(gameSelected == "ticTacToe" && board.isCenterOnly()){ 
+		if(playboard.size == 9 && board.isCenterOnly()){ 
 			this._bestmove = 0; 
 			return; 
 		}
@@ -188,7 +165,7 @@ function MinMax(maxdepth, initBoard){
 		
 		var beta; 
 		for (var i = 0; i < movelist.length; i++){
-			board2 = playboard.copy(); 
+			board2 = playboard.mkcopy(); 
 			board2.move(curplayer, movelist[i]); 
 			
 			beta = -this._buildtree_r(board2,otherplayer, depth+1); 
@@ -226,7 +203,8 @@ function Board(){
 	this.NONE = 0; 
 	this.X = 1; 
 	this.O = 2; 
-		
+	this.name = new Date().toString(); 
+	
 	this._board = new Array(); 
 	
 	this.size = 9; 
@@ -236,7 +214,7 @@ function Board(){
 	}
 }
 
-Board.prototype.copy = function(){
+Board.prototype.mkcopy = function(){
 	var clone = new Board();  
 	clone._board = this._board.concat(); 
 	return clone; 
@@ -341,6 +319,7 @@ function BoardC4(){
 	this.NONE = 0; 
 	this.X = 1; 
 	this.O = 2; 
+	this.name = new Date().toString(); 
 		
 	this._board = new Array(); 
 	
@@ -351,7 +330,7 @@ function BoardC4(){
 	}
 }
 
-BoardC4.prototype.copy = function(){
+BoardC4.prototype.mkcopy = function(){
 	var clone = new BoardC4();  
 	clone._board = this._board.concat(); 
 	return clone; 
@@ -425,9 +404,203 @@ BoardC4.prototype.toStr = function(){
 }
 
 
+
+/** 
+ * Function: reportID
+ * ------------------
+ * reportID is used for testing the event listeners are correctly 
+ * attached to the cells of the table
+ */ 
+
 function reportID(){
 	console.log(this.id); 
 };
+
+
+
+
+/**
+ * Implementation note
+ * -------------------
+ * creates the board for a tic tac toe game
+ */ 
+
+function createTTTBoard(){
+
+	var board = "<table class='tttBoard' id='tictactoe'><tr><td id='00' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='01' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='02' style='border-bottom:1px solid'>&nbsp</td></tr><tr><td id='10' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='11' style='border-right:1px solid; border-bottom:1px solid;'>&nbsp</td><td id='12' style='border-bottom:1px solid;'>&nbsp</td></tr><tr><td id='20' style='border-right:1px solid'>&nbsp</td><td id='21' style='border-right:1px solid'>&nbsp</td><td id='22' >&nbsp</td></tr></table>"
+	
+	return board; 
+}
+
+/**
+ * Function: createC4Board
+ * -----------------------
+ * createC4Board creates the board for a game of connect four. 
+ */ 
+
+
+function createC4Board(){ 
+
+
+	var board = '<table class="tttBoard" id="tictactoe"><tr class="topRow"><td id="00">&nbsp</td><td id="01">&nbsp</td><td id="02">&nbsp</td><td id="03">&nbsp</td></tr><tr class="bottomRow"><td id="10">&nbsp</td><td id="11">&nbsp</td><td id="12">&nbsp</td><td id="13">&nbsp</td></tr><tr class="bottomRow"><td id="20">&nbsp</td><td id="21">&nbsp</td><td id="22">&nbsp</td><td id="23">&nbsp</td></tr><tr class="bottomRow"><td id="30">&nbsp</td><td id="31">&nbsp</td><td id="32">&nbsp</td><td id="33">&nbsp</td></tr></table>'
+	
+	return board; 
+}
+
+/**
+ * Function: createTTTGameTitle
+ * ----------------------------
+ * createTTTGameTitle generates the HTML to be injected into the main page
+ */
+
+function createTTTGameTitle(){
+	var gameTitle = "<h2 id='gameTitle'>Tic Tac Toe</h2>"  
+	return gameTitle; 
+}
+
+
+
+/**
+ * Function: createTTTSubTitle
+ * ----------------------------
+ * createTTTSubTitle generates the HTML to be injected into the main page
+ */
+
+function createTTTSubTitle(){
+	var subTitle = "<p class='lead'>Click a box to start or click Tic Tac Toe to let computer start</p>" 
+	return subTitle; 
+}
+
+
+/**
+ * Function: createC4GameTitle
+ * ----------------------------
+ * createC4GameTitle generates the HTML to be injected into the main page
+ */
+
+function createC4GameTitle(){
+	var gameTitle = "<h2 id='gameTitle'>Connect Four</h2>"  
+	return gameTitle; 
+}
+
+
+
+/**
+ * Function: createC4SubTitle
+ * ----------------------------
+ * createC4SubTitle generates the HTML to be injected into the main page
+ */
+
+function createC4SubTitle(){
+	var subTitle = "<p class='lead'>Click a box to start or click Connect Four to let computer start</p>" 
+	return subTitle; 
+}
+
+
+
+/** 
+ * Function: setGameTTT
+ * --------------------
+ * setGameTTT sets up the environment to play a game of tic tac toe
+ * 
+ */ 
+function setGameTTT(){
+
+	console.log("tictactoe selected"); 
+	gameSelected = "ticTacToe"; 
+	
+	var cssLink = document.getElementById("cssLink"); 
+	cssLink.href = "F:/Tictactoe/mainttt.css"; 
+	
+	var gameTitle = document.getElementById("gameTitle"); 
+	gameTitle.innerHTML = createTTTGameTitle(); 
+	
+	var gameSubTitle = document.getElementById("gameSubTitle");
+	gameSubTitle.innerHTML = createTTTSubTitle(); 
+	
+	var boardContainer = document.getElementById("boardContainer"); 
+	boardContainer.innerHTML = createTTTBoard(); 
+	
+	board = new Board(); 
+	mm = new MinMax(6, window.board); 
+
+}
+
+
+
+/** 
+ * Function: setupListeners
+ * ------------------------
+ * attach event listeners to the cells of the table
+ */ 
+ 
+function setupListeners(){ 
+	var sideLen = Math.sqrt(window.board.size); 
+	var cells = new Array(); 
+	var id; 
+
+	for (var i = 0; i < sideLen; i++){ 
+		for(var j = 0; j< sideLen; j++) {
+			id = String(i) + String(j);
+			cells.push(document.getElementById(id)); 
+		}
+	}
+
+	cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
+	cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
+	
+	var mainTitle = document.getElementById("gameTitle"); 
+	mainTitle.addEventListener("click",computerOpens, false); 
+}
+
+
+
+
+function setupC4Listeners(){ 
+	var movelist = board.successors();  
+	var index2cell = index2CellID_C4;	
+	var cells = new Array(); 
+	
+	for (var i = 0; i < movelist.length; i++){ 
+			cells.push(document.getElementById(index2cell(movelist[i]))); 
+	}
+	
+	cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
+	cells.map(function(item,index,array){item.class = "highlightTd"; }); 
+	
+	var mainTitle = document.getElementById("gameTitle"); 
+	mainTitle.addEventListener("click",computerOpens, false); 
+}
+
+
+
+function setGameC4(){
+	gameSelected = "connectFour"; 
+	var cssLink = document.getElementById("cssLink"); 
+	cssLink.href = "F:/Tictactoe/mainC4.css"; 
+	
+	var gameTitle = document.getElementById("gameTitle"); 
+	gameTitle.innerHTML = createC4GameTitle(); 
+	
+	var gameSubTitle = document.getElementById("gameSubTitle");
+	gameSubTitle.innerHTML = createC4SubTitle(); 
+	
+	var boardContainer = document.getElementById("boardContainer"); 
+	boardContainer.innerHTML = createC4Board();
+	
+	
+	board = new BoardC4(); 
+	mm = new MinMax(6, window.board); 
+
+}
+
+
+
+/** 
+ * Function: nextPlayer
+ * --------------------
+ * nextPlayer is a convience function to change the current player
+ */ 
 
 function nextPlayer(playerID){
 	if(playerID == 1) return 2; 
@@ -435,22 +608,57 @@ function nextPlayer(playerID){
 }
 
 
+
+/**
+ * Function: cellID2Index_ttt
+ * --------------------------
+ * cellID2Index_ttt takes a cellID and returns the mapping to the 
+ * index that represents that position in the board
+ */ 
+
 function cellID2index_ttt(cellID){ 
 	console.log("cellID2index called with " + cellID); 
 	var id2index = {"00":0,"01":1,"02":2,"10":3,"11":4,"12":5,"20":6,"21":7,"22":8}; 
 	return id2index[cellID]; 
 }
 
+
+
+/**
+ * Function: index2CellID_ttt
+ * --------------------------
+ * index2CellID takes an and returns the mapping to the 
+ * cellID representing a position in the board
+ */ 
+
 function index2CellID_ttt(index){ 
 	var index2id = {0:"00",1:"01",2:"02",3:"10",4:"11",5:"12",6:"20",7:"21",8:"22"}; 
 	return index2id[index]; 
 }
+
+
+
+/**
+ * Function: cellID2Index_C4
+ * --------------------------
+ * index2CellID takes an and returns the mapping to the 
+ * cellID representing a position in the board
+ */ 
 
 function cellID2index_C4(cellID){ 
 	console.log("cellID2index called with " + cellID); 
 	var id2index = {"00":0,"01":1,"02":2,"03":3,"10":4,"11":5,"12":6,"13":7,"20":8,"21":9,"22":10,"23":11,"30":12,"31":13,"32":14,"33":15}; 
 	return id2index[cellID]; 
 }
+
+
+
+/**
+ * Function: index2CellID_C4
+ * -------------------------
+ * index2CellID takes an and returns the mapping to the 
+ * cellID representing a position in the board
+ */ 
 
 function index2CellID_C4(index){ 
 	var index2id = {0:"00",1:"01",2:"02",3:"03",4:"10",5:"11",6:"12",7:"13",8:"20",9:"21",10:"22",11:"23",12:"30",13:"31",14:"32",15:"33"}; 
@@ -482,17 +690,20 @@ function playTurn(){
 		//human turn
 		selectedCell = this.id;
 		var res = cellID2index(selectedCell); 
-		board.move(activePlayer, cellID2index(selectedCell)); 
+		window.board.move(activePlayer, cellID2index(selectedCell)); 
 		this.firstChild.nodeValue = playerIcon(activePlayer); 
-	
+		this.removeEventListener("click", playTurn, false); 
+			
 		//computer turn, switch players
+		var copy = window.board.mkcopy(); 
 		activePlayer = nextPlayer(activePlayer); 
-		move = mm.buildtree(board, activePlayer);	
-		board.move(activePlayer,move);
-		console.log(board.toStr()); 
+		move = mm.buildtree(copy, activePlayer);	
+		window.board.move(activePlayer,move);
+		console.log("board after computer move =\n" + board.toStr()); 
 		
 		var secondSelectedCell = document.getElementById(index2CellID(move)); 
 		secondSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
+		secondSelectedCell.removeEventListener("click",playTurn,false); 
 		
 		//set back to the human 
 		activePlayer = nextPlayer(activePlayer); 
@@ -519,10 +730,12 @@ function computerOpens(){
 	board.move(activePlayer,move);
 	var computerSelectedCell = document.getElementById(index2CellID(move)); 
 	computerSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
+	computerSelectedCell.removeEventListener("click", playTurn, false); 
 	activePlayer = nextPlayer(activePlayer); 	
 }
 
 
+	
 /**
  * Note: 
  * -----
@@ -535,58 +748,24 @@ function computerOpens(){
   * ------------------------
   * 
   */ 
-  
 
 
-gameSelected = "connectFour";
+gameSelected = "";   
 
-  
-
-if(gameSelected == "ticTacToe"){
-	var cssLink = document.getElementById("cssLink"); 
-	cssLink.href = "F:/Tictactoe/mainttt.css"; 
-	var boardContainer = document.getElementById("boardContainer"); 
-	boardContainer.innerHTML = createTTTBoard(); 
-	board = new Board(); 
-
-}
-
-
-if(gameSelected == "connectFour"){ 
-	var cssLink = document.getElementById("cssLink"); 
-	cssLink.href = "F:/Tictactoe/mainC4.css"; 
-	var boardContainer = document.getElementById("boardContainer"); 
-	boardContainer.innerHTML = createC4Board();
-	board = new BoardC4(); 
-}
-  
 activePlayer = null; 
 
+var tictactoeDropdown = document.getElementById("button-tictactoe");   
+var connect4Dropdown = document.getElementById("button-connect4"); 
 
-mm = new MinMax(6, board); 
+//set
+tictactoeDropdown.addEventListener("click", setGameTTT, false); 
+tictactoeDropdown.addEventListener("click", setupListeners, false); 
+
+connect4Dropdown.addEventListener("click", setGameC4, false); 
+connect4Dropdown.addEventListener("click", setupC4Listeners, false); 
 
 
 
-var sideLen = Math.sqrt(board.size); 
-var cells = new Array(); 
-var id; 
-
-for (var i = 0; i < sideLen; i++){ 
-	for(var j = 0; j< sideLen; j++) {
-		id = String(i) + String(j);
-		cells.push(document.getElementById(id)); 
-	}
-}
-
-//add event listeners
-if(true){
-cells.map(function(item,index,array){item.addEventListener("click", reportID, false);}); 
-cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
-cells.map(function(item,index,array){item.firstChild.nodeValue = '\u00A0\u00A0';}); 
-var mainTitle = document.getElementById("mainTitle"); 
-mainTitle.addEventListener("click",computerOpens, false); 
-
-}
 
 
 	
