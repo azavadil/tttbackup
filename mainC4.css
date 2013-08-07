@@ -48,9 +48,7 @@
 		height: 100%; 
 	}
 	
-	.highlightTd{ 
-		background-color: #CEECF5; 
-	}
+	
 	
 	/*Tic tac toe table */ 
 	
@@ -71,6 +69,10 @@
 	  border-right:1px solid; 
 	  border-left:1px solid; 
 	  border-bottom:1px solid;
+	}
+	
+	.highlightedTd{ 
+		background-color: #CEECF5; 
 	}
 	
 	/* table cells */ 

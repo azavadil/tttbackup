@@ -492,7 +492,7 @@ function createC4GameTitle(){
  */
 
 function createC4SubTitle(){
-	var subTitle = "<p class='lead'>Click a box to start or click Connect Four to let computer start</p>" 
+	var subTitle = "<p class='lead'>Click a shaded box to start or click Connect Four to let computer start</p>" 
 	return subTitle; 
 }
 
@@ -501,9 +501,9 @@ function createC4SubTitle(){
 /** 
  * Function: setGameTTT
  * --------------------
- * setGameTTT sets up the environment to play a game of tic tac toe
- * 
- */ 
+ * setGameTTT sets up the environment to play a game of tic tac toe 
+ */
+ 
 function setGameTTT(){
 
 	console.log("tictactoe selected"); 
@@ -522,6 +522,34 @@ function setGameTTT(){
 	boardContainer.innerHTML = createTTTBoard(); 
 	
 	board = new Board(); 
+	mm = new MinMax(6, window.board); 
+
+}
+
+
+
+/** 
+ * Function: setGameC4
+ * -------------------
+ * setGameC4 sets up the environment to play a game of connect 4
+ */ 
+ 
+function setGameC4(){
+	gameSelected = "connectFour"; 
+	var cssLink = document.getElementById("cssLink"); 
+	cssLink.href = "F:/Tictactoe/mainC4.css"; 
+	
+	var gameTitle = document.getElementById("gameTitle"); 
+	gameTitle.innerHTML = createC4GameTitle(); 
+	
+	var gameSubTitle = document.getElementById("gameSubTitle");
+	gameSubTitle.innerHTML = createC4SubTitle(); 
+	
+	var boardContainer = document.getElementById("boardContainer"); 
+	boardContainer.innerHTML = createC4Board();
+	
+	
+	board = new BoardC4(); 
 	mm = new MinMax(6, window.board); 
 
 }
@@ -555,43 +583,28 @@ function setupListeners(){
 
 
 
+/** 
+ * Function: setupC4Listeners
+ * ------------------------
+ * attach event listeners to table cells that valid choices
+ */ 
 
 function setupC4Listeners(){ 
+
 	var movelist = board.successors();  
 	var index2cell = index2CellID_C4;	
 	var cells = new Array(); 
 	
 	for (var i = 0; i < movelist.length; i++){ 
-			cells.push(document.getElementById(index2cell(movelist[i]))); 
+			cells.push(document.getElementById(index2cell(movelist[i])));
+			
 	}
 	
 	cells.map(function(item,index,array){item.addEventListener("click", playTurn, false);}); 
-	cells.map(function(item,index,array){item.class = "highlightTd"; }); 
+	cells.map(function(item,index,array){item.setAttribute("class", "highlightedTd"); }); 
 	
 	var mainTitle = document.getElementById("gameTitle"); 
 	mainTitle.addEventListener("click",computerOpens, false); 
-}
-
-
-
-function setGameC4(){
-	gameSelected = "connectFour"; 
-	var cssLink = document.getElementById("cssLink"); 
-	cssLink.href = "F:/Tictactoe/mainC4.css"; 
-	
-	var gameTitle = document.getElementById("gameTitle"); 
-	gameTitle.innerHTML = createC4GameTitle(); 
-	
-	var gameSubTitle = document.getElementById("gameSubTitle");
-	gameSubTitle.innerHTML = createC4SubTitle(); 
-	
-	var boardContainer = document.getElementById("boardContainer"); 
-	boardContainer.innerHTML = createC4Board();
-	
-	
-	board = new BoardC4(); 
-	mm = new MinMax(6, window.board); 
-
 }
 
 
@@ -692,8 +705,9 @@ function playTurn(){
 		var res = cellID2index(selectedCell); 
 		window.board.move(activePlayer, cellID2index(selectedCell)); 
 		this.firstChild.nodeValue = playerIcon(activePlayer); 
-		this.removeEventListener("click", playTurn, false); 
-			
+		if(board.size == 16) { this.setAttribute("class","");}
+		this.removeEventListener("click", playTurn, false);
+		
 		//computer turn, switch players
 		var copy = window.board.mkcopy(); 
 		activePlayer = nextPlayer(activePlayer); 
@@ -703,10 +717,12 @@ function playTurn(){
 		
 		var secondSelectedCell = document.getElementById(index2CellID(move)); 
 		secondSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
+		if(board.size == 16) { secondSelectedCell.setAttribute("class","");}
 		secondSelectedCell.removeEventListener("click",playTurn,false); 
 		
 		//set back to the human 
 		activePlayer = nextPlayer(activePlayer); 
+		setupC4Listeners(); 
 	}
 	
 }
@@ -731,6 +747,7 @@ function computerOpens(){
 	var computerSelectedCell = document.getElementById(index2CellID(move)); 
 	computerSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
 	computerSelectedCell.removeEventListener("click", playTurn, false); 
+	if(board.size == 16) { computerSelectedCell.setAttribute("class","");}
 	activePlayer = nextPlayer(activePlayer); 	
 }
 
@@ -763,8 +780,6 @@ tictactoeDropdown.addEventListener("click", setupListeners, false);
 
 connect4Dropdown.addEventListener("click", setGameC4, false); 
 connect4Dropdown.addEventListener("click", setupC4Listeners, false); 
-
-
 
 
 
