@@ -13,10 +13,6 @@ function assert(condition, message) {
 
 
 
-
-
-
-
 /**
  * Function: isSquare
  * ------------------
@@ -441,12 +437,47 @@ function createTTTBoard(){
 
 function createC4Board(){ 
 
-
 	var board = '<table class="tttBoard" id="tictactoe"><tr class="topRow"><td id="00">&nbsp</td><td id="01">&nbsp</td><td id="02">&nbsp</td><td id="03">&nbsp</td></tr><tr class="bottomRow"><td id="10">&nbsp</td><td id="11">&nbsp</td><td id="12">&nbsp</td><td id="13">&nbsp</td></tr><tr class="bottomRow"><td id="20">&nbsp</td><td id="21">&nbsp</td><td id="22">&nbsp</td><td id="23">&nbsp</td></tr><tr class="bottomRow"><td id="30">&nbsp</td><td id="31">&nbsp</td><td id="32">&nbsp</td><td id="33">&nbsp</td></tr></table>'
 	
 	return board; 
 }
 
+
+
+/**
+ * Function: createBaseCSS
+ * -----------------------
+ * createBaseCSS creates the base CSS. 
+ */ 
+
+function createBaseCSS(){ 
+
+   return "@media and (min-width:979px){body{padding-top:60px;}}body{font-family:'Open Sans',Helvetica,Arial,sans-serif}.heading,.subheading {font-family:'Ubuntu',Helvetica,Arial,sans-serif;text-align:center};.mainBoard{height:300px;}.tttBoard {text-align:center;table-layout:fixed;min-height:100%;min-width:100%;}.footer{color:#cccccc;text-align:center;}.footer p{font-size:11px;}.footer a {color:#ccccff;}"
+}
+
+
+
+/**
+ * Function: createTTTCSS
+ * -----------------------
+ * createTTTCSS returns the CSS for a game of tic tac toe
+ */ 
+	
+function createTTTCSS(){ 
+	return  "<style type='text/css'>@media(max-width:979px){body{padding-top:0px;}}body{font-family:'Open Sans',Helvetica,Arial,sans-serif}.heading,.subheading{font-family: 'Ubuntu',Helvetica,Arial,sans-serif;text-align:center;}.mainBoard{height:300px;}.tttBoard{text-align:center;table-layout:fixed; min-height:100%;min-width:100%;}tr{height = 33%;}td{width:33%;}.footer{color:#cccccc;text-align:center;}.footer p { font-size: 11px;}.footer a {color: #ccccff;}</style>";
+}
+ 
+/**
+ * Function: createC4CSS
+ * -----------------------
+ * createC4CSS returns the CSS for a game of connect4
+ */ 
+	
+function createC4CSS(){ 
+	return   "<style type='text/css'>@media(max-width:979px){body{padding-top:0px;}}body{font-family:'Open Sans',Helvetica,Arial,sans-serif;}.heading,.subheading{font-family:'Ubuntu',Helvetica,Arial,sans-serif;text-align:center;}.boardRow{height:200px;}.mainBoard{height:100%;}.tttBoard{text-align:center;table-layout:fixed;min-height:100%;min-width:100%;}.topRow td{border-right:1px solid;border-left:1px solid;border-bottom:1px solid;}.tttBoard,.bottomRow td{border-right:1px solid;border-left:1px solid;border-bottom:1px solid;}.highlightedTd{background-color: #CEECF5;}tr{height = 25%;}td{width:25%;}.footer{color:#cccccc;text-align:center;}.footer p{font-size: 11px;}.footer  a{color: #ccccff;}</style>"; 
+} 
+ 
+ 
 /**
  * Function: createTTTGameTitle
  * ----------------------------
@@ -509,8 +540,8 @@ function setGameTTT(){
 	console.log("tictactoe selected"); 
 	gameSelected = "ticTacToe"; 
 	
-	var cssLink = document.getElementById("cssLink"); 
-	cssLink.href = "F:/Tictactoe/mainttt.css"; 
+	var cssSetter = document.getElementById("dynamicCSS"); 
+	cssSetter.innerHTML = createTTTCSS(); 
 	
 	var gameTitle = document.getElementById("gameTitle"); 
 	gameTitle.innerHTML = createTTTGameTitle(); 
@@ -536,8 +567,10 @@ function setGameTTT(){
  
 function setGameC4(){
 	gameSelected = "connectFour"; 
-	var cssLink = document.getElementById("cssLink"); 
-	cssLink.href = "F:/Tictactoe/mainC4.css"; 
+
+	var cssSetter = document.getElementById("dynamicCSS"); 
+	cssSetter.innerHTML = createC4CSS(); 
+
 	
 	var gameTitle = document.getElementById("gameTitle"); 
 	gameTitle.innerHTML = createC4GameTitle(); 
@@ -708,21 +741,34 @@ function playTurn(){
 		if(board.size == 16) { this.setAttribute("class","");}
 		this.removeEventListener("click", playTurn, false);
 		
+		//check for winner
+		if(window.board.getWinner() != 0 || window.board.full()){ 
+			declareWinner(); 
+			return
+		}
+		
 		//computer turn, switch players
 		var copy = window.board.mkcopy(); 
 		activePlayer = nextPlayer(activePlayer); 
 		move = mm.buildtree(copy, activePlayer);	
 		window.board.move(activePlayer,move);
-		console.log("board after computer move =\n" + board.toStr()); 
 		
+		
+	
 		var secondSelectedCell = document.getElementById(index2CellID(move)); 
 		secondSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
 		if(board.size == 16) { secondSelectedCell.setAttribute("class","");}
 		secondSelectedCell.removeEventListener("click",playTurn,false); 
 		
+		//check for winner
+		if(window.board.getWinner() != 0 || window.board.full()){ 
+			declareWinner();
+			return; 
+		}
+		
 		//set back to the human 
 		activePlayer = nextPlayer(activePlayer); 
-		setupC4Listeners(); 
+		if(window.board.size == 16){ setupC4Listeners();} 
 	}
 	
 }
@@ -747,18 +793,27 @@ function computerOpens(){
 	var computerSelectedCell = document.getElementById(index2CellID(move)); 
 	computerSelectedCell.firstChild.nodeValue = playerIcon(activePlayer);
 	computerSelectedCell.removeEventListener("click", playTurn, false); 
-	if(board.size == 16) { computerSelectedCell.setAttribute("class","");}
+	if(board.size == 16) { 
+		computerSelectedCell.setAttribute("class","");
+		setupC4Listeners();}
 	activePlayer = nextPlayer(activePlayer); 	
 }
 
+function declareWinner(){
+	var gameOverElem = document.getElementById("gameOverMsg");
+	var restartBtn = document.getElementById("playAgain"); 	
+	var gameOverMsg = ""
+	if(window.board.getWinner() != 0){ 
+		gameOverMsg = "<div>Winner is: " + playerIcon(window.board.getWinner()); + "</div>";
+	} else { 
+		gameOverMsg = "<div>Tie game!</div>";
+	}
+	gameOverElem.innerHTML =  gameOverMsg;
+	var playAgainElem = document.getElementById("playAgain"); 
+	playAgainElem.innerHTML = "<input type='button' class='btn btn-primary btn-large' value='Play Again' onClick='window.location.reload()'>"; 
+}
 
-	
-/**
- * Note: 
- * -----
- * we'll have to get the board type as the first action and then build out the board
- * we'll also have to modify the board to be a tic tac toe board or a connect4 board
- */ 
+	 
 
  /** 
   * Main routine starts here
@@ -770,6 +825,10 @@ function computerOpens(){
 gameSelected = "";   
 
 activePlayer = null; 
+
+var cssSetter = document.getElementById("dynamicCSS"); 
+cssSetter.innerHTML = createBaseCSS(); 
+
 
 var tictactoeDropdown = document.getElementById("button-tictactoe");   
 var connect4Dropdown = document.getElementById("button-connect4"); 
